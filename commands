@@ -1,0 +1,182 @@
+////////////////////////////////////////////////////////////////////RTL-LAGO/////////////////////////////////////////////////////////
+//
+//****Run install.sh in Base folder to make commands
+//
+//****Short args are -i,-n,-f etc
+//
+//****Use '-h' or '--help' for help
+//
+//****Long args: --filename,--input_ranges, etc i.e between '< >', <input_rannges>
+//
+//****Arguments witten in plural can be entered multipls.include adding wire,reg,parameters etc
+//		Example : add -w <wire> 'clr_sec clr_min clr_hrs'
+//
+//****For the time being we are using Ubuntu terminal,For future we will make it avalible for Windows and other operating system 
+//
+//****The Software Architecture is in progress undesired cmd may give to annonymous result or Error
+//
+//****TO remove commands from your terminal run uninstall.sh in Base folder
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+*create
+	USAGE:
+		create 
+	OPTIONAL:
+		-f <filename> -i <inputs> -ir <input_ranges> -o <outputs> -or <output_ranges> -h <help>
+	EXAMPLE: 
+			create -f clock.sv -i enable -ir [0:0] -o count_sec -or [5:0]
+
+*list_lago
+	Three options avalible
+	USAGE:
+		1) list_lago  					//list file avalable in library to plug
+	 	2) list_lago -f <file>			//view file content (cat)
+	 	3) list_lago -e <edit_file> 	//edit file in nano editer
+
+	EXAMPLES: 
+			  list_lago -f bram.sv 
+			  list_lago -e bram.sv
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+*plug
+	Three options avalable:
+		1) plug --instance
+		2) plug --register
+		3) plug --mux 
+	
+	1) plug --instance:
+	USAGE:
+		plug -inst <instance_name> 
+			OPTIONAL: -n <name_instance> -t <topfile>
+			EXAMPLE: plug -inst up_counter.sv -n SEC 
+	
+	2) plug --register:
+	USAGE:
+		plug -r <register> -i <inputs> -o <outputs> -en <enable> 
+			OPTIONAL:-ir <input_ranges>  -or <output_ranges> -t <topfile> 
+			EXAMPLE: plug -r -i data_in -ir [5:0] -o data_output -or [5:0] -en push
+	
+	3) plug --mux:
+	USAGE:
+		plug -m -i <inputs> -o <output> -sl <select_line>
+			OPTIONAL:-ir <input_ranges> -or <output_ranges> -t <topfile> 
+			EXAMPLE: plug -m -i data_in1 data_in2 -ir [3:0] [3:0] -o data_out3 data_out4 -or [3:0] [3:0] -sl count
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+*add 
+	six options avalaibe:
+		1) add --register
+		2) add --wire
+		3) add --port
+		4) add --parameter
+		5) add --change: range
+		6) add --change: port
+	
+	1) add --register:
+	USAGE:
+		add -r <register>  		
+			OPTIONAL: -rn <range> -t <topfile>  :defult range 1bit
+			EXAMPLE:add -r increment	 
+		
+	2) add -wire:
+	USAGE:
+		add -w <wire>  
+			OPTIONAL: -rn <range> -t <topfile>	:defult range "1bit"
+			EXAMPLE:add -w clear
+		
+	3) add --Port:
+	USAGE:
+		add -p -i <inputs> or -o <outputs> 
+			OPTIONAL:ir <input_ranges> -or <output_ranges> -t <topfile>
+			EXAMPLE: add -p -i count_sec 
+		    
+	4) add --parameter:
+	USAGE:
+		add -P <parameter> -v <value>
+			OPTIONAL: -t <topfile>
+			Example : add -P WIDTH -v 32
+			
+		
+	5) add --chane : range
+	USAGE:
+		add -c <change> range -pr <port_name> -nr <new_range> 
+			OPTIONAL: -t <topfile>
+			EXAMPLE: add -c range -pr data_in -nr 32 -t top.sv 
+			
+	6) add -change : port
+	USAGE:
+		add -c <change> port -pr <port_name> -ns <new_status> 
+			OPTIONAL: -t <topfile> 
+			EXAMPLE:add -c port -pr data -ns output -t top.sv 
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+*connect
+	Four options avalible:
+		1) connect : Top_level_file inputs/outputs to instance ports
+		2) connect : reg to instance ports
+		3) connect : wire to instance ports
+		4) connect : Two instances
+	
+	1) connect : Top_level_file inputs/outputs to instance ports
+	USAGE:
+		connect -i <instance> -ip <input_port> -o <output_port>
+		OPTIONAL:-t <topfile>
+		Example : connect -i SEC -ip count -o count_sec
+	
+	2) connect : reg
+	USAGE:
+		connect -r <reg> -i <instance> -ip <input_port>	 
+		OPTIONAL: -t <topfile>
+		EXAMPLE: connect -r start -i SEC -ip en
+	
+	3) connect : wire
+	USAGE:
+		connect -w <wire> -i <instance> -ip <input_port>	 
+		OPTIONAL:-t <topfile>
+		EXAMPLE: connect -w clr_sec -i SEC -ip count_max
+	
+	4) connect : Two instances
+	USAGE:
+		connect -i <instance1> -ip <input_ports> -o <instance2> -op <output_ports>
+		OPTIONAL: -t <topfile>
+		EXAMPLE: -i SEC -ip data_in -o MIN -op count
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+*rename				
+	Two options avalible
+	
+		1) rename --port
+		2) rename --instance
+	
+	1) rename --port:
+	USAGE:
+		rename -p -e <earlier> -n <new_name>
+			OPTIONAL: -t <topfile>
+			EXAMPLE:rename -p -e data -n data_in
+			
+	2) rename --instance: 
+	USAGE: 
+		rename -i -e <earlier> -n <new_name>
+		OPTIONAL: -t <topfile>
+		EXAMPLE:rename -i -e SEC -n inst_sec
+
+*delete 
+	Two options avalible
+	
+		1) delete --port
+		2) delete --instance
+	
+	1) delete --port:
+	USAGE:
+	   	delete -p <port>
+		OPTIONAL: -t <topfile>
+		EXAMPLE: delete -p data_in
+			
+	2) delete --instance:  
+	USAGE:
+		delete -i <instance>
+		OPTIONAL: -t <topfile>
+		EXAMPLE: delete -i count_sec
+
+---------------------------------------------------------------------------------------------------------------------------------------------
