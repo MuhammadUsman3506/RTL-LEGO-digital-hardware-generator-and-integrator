@@ -160,7 +160,9 @@ if __name__ == '__main__':
     parser.add_argument('-p',"--port",action='store_true')
     parser.add_argument('-c',"--change",type=str,help='change IO status or range')
     parser.add_argument('-P', '--parameter',nargs='+',help='the name of the parameter(s) to add')
+    parser.add_argument('-lp','--localparam',nargs='+',help='the name of the localparam(s) to add')
     parser.add_argument('-v', '--value',nargs='+', help='the value of the parameter(s) to add')
+    parser.add_argument('-inst','--instance',help='instance name')
     parser.add_argument('-r','--reg',help='reg',nargs='+', type=str)
     parser.add_argument('-w','--wire',help='wire', nargs='+',type=str)
     parser.add_argument('-rn','--range',help='range',nargs='+',type=str)
@@ -228,6 +230,17 @@ if __name__ == '__main__':
         else:
             print("Please provide value for parameter(s) to add")
             print("Example:add -P <parameter> 'WIDTH' -v <value> '32' -t <topfile> 'top.sv")
+            exit()
+            
+    if args.localparam[0]:
+        if args.instance:
+            for args.localparam,args.value in zip(args.localparam,args.value):
+                addparam.parameter_json(Top_level_file,args.localparam,args.value,Baseboard_path)
+                addparam.adding_localparam(Top_level_file,args.localparam,args.value,args.instance)
+            exit()
+        else:
+            print("Please provide value for localparam(s) to add")
+            print("Example:add -l <localparam> 'WIDTH' -v <value> '32' -t <topfile> 'top.sv")
             exit()
             
     if args.change:
