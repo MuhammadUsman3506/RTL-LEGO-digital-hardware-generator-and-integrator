@@ -1,4 +1,4 @@
-# RTL LAGO
+# RTL LEGO
 
 ## A Digital Hardware Generator and Integrator
 
@@ -27,7 +27,7 @@ create
 To veiw avalible files in library
 
 ```bash
-list_lago 
+list_lego 
 ```
 
 To create instances of library files in your Toplevel file and plug registers,mux etc
@@ -64,24 +64,24 @@ if you want to add more inputs and outputs in the file use following commands
 create -f filename -i inputs -o clear result -ir None [5:0] -or None [3:0]
 ```
 
-## list_lago
+## list_lego
 
 This command will list all the files that are present in the library.
 
 ```bash
-list_lago
+list_lego
 ```
 
 To view the content of a file use following command
 
 ```bash
-list_lago -f filename
+list_lego -f filename
 ```
 
 To edit a file use following command
 
 ```bash
-list_lago -e filename
+list_lego -e filename
 ```
 
 ## plug
