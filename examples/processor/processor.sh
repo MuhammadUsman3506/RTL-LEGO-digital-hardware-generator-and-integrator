@@ -3,7 +3,7 @@ create -f processor.sv	#create file
 add -P WIDTH RAM_WIDTH RAM_ADDR_BITS PROG_FILE PROG_START_ADDR PROG_END_ADDR DATA_FILE DATA_START_ADDR DATA_END_ADDR -v "9" "32" "9" \"'program.hex'\" "0" "8" \"'data_file.txt'\" "0" "5" #adding parameters
 add -r opcode -rn "[4:0]" # add reg 
 add -w instr reg_data_in alu_out dram_data_out op2 op1 prog_cnt ctl3 ctl2 ctl1 -rn "[RAM_WIDTH-1:0]" "[RAM_WIDTH-1:0]" "[RAM_WIDTH-1:0]" "[RAM_WIDTH-1:0]" "[RAM_WIDTH-1:0]" "[RAM_WIDTH-1:0]" "[WIDTH-1:0]" "None" "None" "None"  #adding wire 1-bit 
-add -lp LW SW  -v "'d4" "'d5"  # LOCAL PARAM
+add -lp LW SW  -v "5'd4" "5'd5"  # LOCAL PARAM
 ###################### up_counter ########################
 plug -inst up_counter.sv -n up_counter_inst	#plug instance up_counter.sv
 connect -i up_counter_inst -ip clk reset -op clk reset # Top_level_file inputs/outputs to instance ports
