@@ -1,46 +1,47 @@
 module axis_mux_2to1
-	#(	  
-		parameter	WIDTH 		= 16
-	)
-	(  
-	input		[2:0]			sel,
-	input		[WIDTH-1:0]		data_0,
-	input						valid_0,
-	output						ready_0,
-	
-	input		[WIDTH-1:0]		data_1,
-	input						valid_1,
-	output						ready_1,
-	
-	input		[WIDTH-1:0]		data_2,
-	input						valid_2,
-	output						ready_2,
-	
-	input		[WIDTH-1:0]		data_3,
-	input						valid_3,
-	output						ready_3,
+#(	  
+	parameter	WIDTH 		= 16,
+	parameter	depth		= 2
+)
+(  
+input		[depth-1:0]			sel,
+input		[WIDTH-1:0]		data_0,
+input						valid_0,
+output	reg				ready_0,
 
-	input		[WIDTH-1:0]		data_4,
-	input						valid_4,
-	output						ready_4,
-	
-	input		[WIDTH-1:0]		data_5,
-	input						valid_5,
-	output						ready_5,
+input		[WIDTH-1:0]		data_1,
+input						valid_1,
+output	reg					ready_1,
 
-	input		[WIDTH-1:0]		data_6,
-	input						valid_6,
-	output						ready_6,
-	
-	input		[WIDTH-1:0]		data_7,
-	input						valid_7,
-	output						ready_7,
+input		[WIDTH-1:0]		data_2,
+input						valid_2,
+output	reg					ready_2,
 
-	output	reg	[WIDTH-1:0]		data,
-	output	reg					valid,
-	input						ready
-	
-    );
+input		[WIDTH-1:0]		data_3,
+input						valid_3,
+output	reg					ready_3,
+
+input		[WIDTH-1:0]		data_4,
+input						valid_4,
+output	reg					ready_4,
+
+input		[WIDTH-1:0]		data_5,
+input						valid_5,
+output	reg					ready_5,
+
+input		[WIDTH-1:0]		data_6,
+input						valid_6,
+output	reg					ready_6,
+
+input		[WIDTH-1:0]		data_7,
+input						valid_7,
+output	reg					ready_7,
+
+output	reg	[WIDTH-1:0]		data,
+output	reg					valid,
+input						ready
+
+   );
 
 always@*
 begin

@@ -30,13 +30,13 @@ then
 else
 	echo "--connect is not installed----";
 fi
-if [[ -L "/usr/bin/list_lago" ]]
+if [[ -L "/usr/bin/list_lego" ]]
 then
 	echo "------------------------------";
-	sudo /bin/rm /usr/bin/list_lago
-	echo "----list_lago uninstalled-----";
+	sudo /bin/rm /usr/bin/list_lego
+	echo "----list_lego uninstalled-----";
 else
-	echo "--list_lago is not installed-";
+	echo "--list_leago is not installed-";
 fi
 if [[ -L "/usr/bin/add" ]]
 then
@@ -64,14 +64,14 @@ else
 fi
 cd ~
 # removing LAGO_USR_INFO
-if [[ -f ~/.LAGO_USR_INFO ]]
+if [[ -f ~/.LEGO_USR_INFO ]]
 then
-	/bin/rm ~/.LAGO_USR_INFO
+	/bin/rm ~/.LEGO_USR_INFO
 	echo "-------------------------------"
-	echo "---LAGO_USR_INFO uninstalled---";
+	echo "---LEGO_USR_INFO uninstalled---";
 	echo "-------------------------------";
 else
-	echo "-LAGO_USR_INFO is not installed-";
+	echo "-LEGO_USR_INFO is not installed-";
 fi
 
 # removing tab_completion from /etc/bash_completion.d/

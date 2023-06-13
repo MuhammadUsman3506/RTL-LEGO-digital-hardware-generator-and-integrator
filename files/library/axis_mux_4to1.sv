@@ -1,30 +1,31 @@
 module axis_mux_4to1
-	#(	  
-		parameter	WIDTH 		= 16
-	)
-	(  
-	input		[1:0]			sel,
+#(	  
+	parameter	WIDTH 		= 16,
+	parameter	depth		= 2
+)
+(  
+	input		[depth-1:0]			sel,
 	input		[WIDTH-1:0]		data_0,
 	input						valid_0,
-	output						ready_0,
+	output	reg					ready_0,
 	
 	input		[WIDTH-1:0]		data_1,
 	input						valid_1,
-	output						ready_1,
+	output	reg					ready_1,
 	
 	input		[WIDTH-1:0]		data_2,
 	input						valid_2,
-	output						ready_2,
+	output	reg					ready_2,
 	
 	input		[WIDTH-1:0]		data_3,
 	input						valid_3,
-	output						ready_3,
+	output	reg					ready_3,
 	
 	output	reg	[WIDTH-1:0]		data,
 	output	reg					valid,
 	input						ready
-	
-    );
+
+   );
 
 always@*
 begin

@@ -1,0 +1,29 @@
+{
+    "toplevelfile": "Baseboard.sv",
+    "ports": {
+        "clk": {
+            "type": "input",
+            "range": "None"
+        },
+        "reset": {
+            "type": "input",
+            "range": "None"
+        }
+    },
+    "SEC": {
+        "ports": {
+            "clk": {
+                "type": "input",
+                "range": "None"
+            },
+            "reset": {
+                "type": "input",
+                "range": "None"
+            },
+            "count": {
+                "type": "output",
+                "range": "[8:0]"
+            }
+        }
+    }
+}

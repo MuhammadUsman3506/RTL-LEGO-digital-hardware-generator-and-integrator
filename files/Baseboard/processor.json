@@ -1,0 +1,237 @@
+{
+    "toplevelfile": "processor.sv",
+    "ports": {
+        "clk": {
+            "type": "input",
+            "range": "None"
+        },
+        "reset": {
+            "type": "input",
+            "range": "None"
+        }
+    },
+    "parameter": {
+        "WIDTH": "9",
+        "RAM_WIDTH": "32",
+        "RAM_ADDR_BITS": "9",
+        "PROG_FILE": "\"program.hex\"",
+        "PROG_START_ADDR": "0",
+        "PROG_END_ADDR": "8",
+        "DATA_FILE": "\"data_file.txt\"",
+        "DATA_START_ADDR": "0",
+        "DATA_END_ADDR": "5",
+        "LW": "'d4",
+        "SW": "'d5"
+    },
+    "reg": {
+        "opcode": "[4:0]"
+    },
+    "wire": {
+        "instr": "[31:0]",
+        "reg_data_in": "[31:0]",
+        "alu_out": "[31:0]",
+        "dram_data_out": "[31:0]",
+        "op2": "[31:0]",
+        "op1": "[31:0]",
+        "prog_cnt": "[8:0]",
+        "ctl3": "None",
+        "ctl2": "None",
+        "ctl1": "None"
+    },
+    "up_counter_inst": {
+        "ports": {
+            "clk": {
+                "type": "input",
+                "range": "None"
+            },
+            "reset": {
+                "type": "input",
+                "range": "None"
+            },
+            "count": {
+                "type": "output",
+                "range": "[8:0]"
+            }
+        }
+    },
+    "prg_mem_inst": {
+        "ports": {
+            "clock": {
+                "type": "input",
+                "range": "None"
+            },
+            "ram_enable": {
+                "type": "input",
+                "range": "None"
+            },
+            "write_enable": {
+                "type": "input",
+                "range": "None"
+            },
+            "address": {
+                "type": "input",
+                "range": "[8:0]"
+            },
+            "in_data": {
+                "type": "input",
+                "range": "[31:0]"
+            },
+            "out_data": {
+                "type": "output",
+                "range": "[31:0]"
+            }
+        }
+    },
+    "regfile_inst": {
+        "ports": {
+            "clk": {
+                "type": "input",
+                "range": "None"
+            },
+            "rd_addr1": {
+                "type": "input",
+                "range": "[4:0]"
+            },
+            "rd_addr2": {
+                "type": "input",
+                "range": "[4:0]"
+            },
+            "rd_data1": {
+                "type": "output",
+                "range": "[31:0]"
+            },
+            "rd_data2": {
+                "type": "output",
+                "range": "[31:0]"
+            },
+            "wr_addr": {
+                "type": "input",
+                "range": "[4:0]"
+            },
+            "wr_en": {
+                "type": "input",
+                "range": "None"
+            },
+            "wr_data": {
+                "type": "input",
+                "range": "[31:0]"
+            }
+        }
+    },
+    "ALU_inst": {
+        "ports": {
+            "clk": {
+                "type": "input",
+                "range": "None"
+            },
+            "opcode": {
+                "type": "input",
+                "range": "[1:0]"
+            },
+            "op1": {
+                "type": "input",
+                "range": "[31:0]"
+            },
+            "op2": {
+                "type": "input",
+                "range": "[31:0]"
+            },
+            "result": {
+                "type": "output",
+                "range": "[31:0]"
+            }
+        }
+    },
+    "Mux_inst": {
+        "ports": {
+            "s_l": {
+                "type": "input",
+                "range": "None"
+            },
+            "in0": {
+                "type": "input",
+                "range": "[31:0]"
+            },
+            "in1": {
+                "type": "input",
+                "range": "[31:0]"
+            },
+            "out": {
+                "type": "output",
+                "range": "[31:0]"
+            }
+        }
+    },
+    "data_mem_inst": {
+        "ports": {
+            "clock": {
+                "type": "input",
+                "range": "None"
+            },
+            "ram_enable": {
+                "type": "input",
+                "range": "None"
+            },
+            "write_enable": {
+                "type": "input",
+                "range": "None"
+            },
+            "address": {
+                "type": "input",
+                "range": "[8:0]"
+            },
+            "in_data": {
+                "type": "input",
+                "range": "[31:0]"
+            },
+            "out_data": {
+                "type": "output",
+                "range": "[31:0]"
+            }
+        }
+    },
+    "inst_not_gate": {
+        "ports": {
+            "in": {
+                "type": "input",
+                "range": "None"
+            },
+            "out": {
+                "type": "output",
+                "range": "None"
+            }
+        }
+    },
+    "inst_comparator": {
+        "ports": {
+            "in0": {
+                "type": "input",
+                "range": "[4:0]"
+            },
+            "in1": {
+                "type": "input",
+                "range": "[4:0]"
+            },
+            "out": {
+                "type": "output",
+                "range": "None"
+            }
+        }
+    },
+    "inst1_comparator": {
+        "ports": {
+            "in0": {
+                "type": "input",
+                "range": "[4:0]"
+            },
+            "in1": {
+                "type": "input",
+                "range": "[4:0]"
+            },
+            "out": {
+                "type": "output",
+                "range": "None"
+            }
+        }
+    }
+}

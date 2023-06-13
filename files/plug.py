@@ -7,18 +7,18 @@ import shutil
 import math
 import re
 from colorama import Fore
-LAGO_DIR = ''
+LEGO_DIR = ''
 Top_level_file = ''
 CURRENT_DIR = os.getcwd()
 #################### LAGO ROOT address #######################################
 
 
-def LAGO_USR_INFO():
-    global LAGO_DIR, Top_level_file
-    Linux_file_path = os.path.expanduser("~/.LAGO_USR_INFO")
+def LEGO_USR_INFO():
+    global LEGO_DIR, Top_level_file
+    Linux_file_path = os.path.expanduser("~/.LEGO_USR_INFO")
     with open(Linux_file_path, "r") as Shell_file:
         sh_file = Shell_file.readlines()
-        LAGO_DIR = sh_file[0].replace("LAGO_DIR=", "")+"/files/"
+        LEGO_DIR = sh_file[0].replace("LEGO_DIR=", "")+"/files/"
         if Top_level_file:
             if f"TOP_FILE={Top_level_file}\n" in sh_file:
                 pass
@@ -27,7 +27,7 @@ def LAGO_USR_INFO():
                 exit()
         else:
             Top_level_file = sh_file[-1]
-    LAGO_DIR = LAGO_DIR.replace("\n", "")
+    LEGO_DIR = LEGO_DIR.replace("\n", "")
     Top_level_file = Top_level_file.replace("TOP_FILE=", '')
 
 
@@ -233,7 +233,7 @@ def fileio(inputs, input_ranges, outputs, output_ranges):
         with open(f"{CURRENT_DIR}/{Top_level_file}", "w") as f:
             f.write(file_contents)
 def create_instance(file_name,inst_name):
-    global LAGO_DIR, Baseboard_path,library_file
+    global LEGO_DIR, Baseboard_path,library_file
 
     if inst_name:
         instance = inst_name
@@ -254,40 +254,91 @@ def create_instance(file_name,inst_name):
                 extract_data(library_file,instance)
     except:
         print("error occured! ")
+
+    #Function to declare a single input and single output combinational block
+def comb_block(fileName,output,input):
+    code = f"always@* {output} = {input};\n"
+    with open(f"{fileName}", "r") as f:
+        content = f.read()
+    with open(f"{fileName}", "a+") as f:
+        if 'endmodule' in content:
+            r_end = (f.tell())-9
+            x = f.truncate(r_end)
+            f.write('\n' + code)
+            f.write('\nendmodule')
+            print(Fore.GREEN,"combinational block declared successfully",Fore.RESET)
+
+#Function to declare a memory in file
+def mem_declaration(fileName,mem_name,wid,dep):
+    code = f"reg\t{wid} {mem_name} {dep};"
+    with open(f"{fileName}", "r") as f:
+        content = f.read()
+    with open(f"{fileName}", "a+") as f:
+        if 'endmodule' in content:
+            r_end = (f.tell())-9
+            x = f.truncate(r_end)
+            f.write('\n' + code)
+            f.write('\nendmodule')
+            print(Fore.GREEN,"memory declared successfully",Fore.RESET)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-inst',"--instance",help='Name of file from which instance is taken', type=str)
+    parser.add_argument('-inst',"--instance",help='Name of file from which instance is taken', type=str, nargs='+')
     parser.add_argument('-m',"--mux",action='store_true')
     parser.add_argument('-r',"--register",action='store_true')
     parser.add_argument('-t,','--topfile',help='Top level file name', type=str)
-
-    
-    parser.add_argument('-n', '--instance_name', help='Name of instance')
+    parser.add_argument('-n', '--instance_name', help='Name of instance',nargs='+')
    
     parser.add_argument('-i', '--inputs',nargs='+',help='Input port name')
     parser.add_argument('-ir', '--input_ranges',help='Input port range')
-    parser.add_argument('-o', '--outputs',help='Output port name')
+    parser.add_argument('-o', '--outputs',help='Output port name',nargs='+')
     parser.add_argument('-or', '--output_ranges',help='Output port range')
       
     parser.add_argument('-sl', '--select_line', type=str, help='Select line')
     
     parser.add_argument('-re', '--reset_signal', type=str, help='Select line')
     parser.add_argument('-en', '--enable_signal', type=str, help='Select line')
+    parser.add_argument("-w","--width_of_mem",type=str,help="width of memory",nargs='+')
+    parser.add_argument("-dp","--depth_of_mem",type=str,help="depth of memory",nargs='+')
+    parser.add_argument("-nm","--name_of_mem",type=str,help="name of memory",nargs='+')
+
     
     args = parser.parse_args()
-    file = args.instance
     Top_level_file = args.topfile
     
-    LAGO_USR_INFO()  # ---->
-    Baseboard_path = os.path.join(LAGO_DIR, 'Baseboard')
-    library = os.path.join(LAGO_DIR, 'library')
+    LEGO_USR_INFO()  # ---->
+    Baseboard_path = os.path.join(LEGO_DIR, 'Baseboard')
+    library = os.path.join(LEGO_DIR, 'library')
 
    
+    if args.outputs and args.inputs:
+        for args.outputs, args.inputs in zip(args.outputs, args.inputs):
+            comb_block(Top_level_file,args.outputs,args.inputs)
+            exit()
+
+    if args.name_of_mem and args.width_of_mem and args.depth_of_mem:
+        for args.name_of_mem, args.width_of_mem, args.depth_of_mem in zip(args.name_of_mem, args.width_of_mem, args.depth_of_mem):
+            mem_declaration(Top_level_file,args.name_of_mem,args.width_of_mem,args.depth_of_mem)
+            exit()
     
     if args.instance:
-        library_file = os.path.join(library, file)  # --->
-        create_instance(args.instance,args.instance_name)
+        try:
+            if  len(args.instance) == 1 and len(args.instance_name) > 1:  
+                for i in args.instance_name:
+                    library_file = os.path.join(library, f"{args.instance[0]}")
+                    create_instance(args.instance[0],i)
+            elif args.instance and args.instance_name:
+                for file,name in zip(args.instance,args.instance_name):
+                    library_file = os.path.join(library, file)
+                    create_instance(file,name)
+        except:
+            if args.instance:
+                for file in args.instance:
+                    library_file = os.path.join(library, file)
+                    create_instance(file,None)
         exit()
+            
     if args.mux:
         if args.inputs and args.outputs and args.select_line:
             generating_mux(args.inputs, args.outputs,args.select_line)
@@ -305,6 +356,4 @@ if __name__ == '__main__':
             print("Please provide all the required arguments\n")
             print("plug -r -i <input_signal> -o <output_signal> -en <enable_signal> -ir <input_range> -or <output_range> \n")
             exit()
-    else:
-        print("Please select bewteen inst,reg,mux")
-        exit()
+   

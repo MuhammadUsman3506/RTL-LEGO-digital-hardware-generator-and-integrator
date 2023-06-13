@@ -6,13 +6,10 @@ module rate_control
 (
 	input 							clk,
 	input 							reset,
-	
-	input  		[COUNT_WIDTH-1:0]	CYCLES_PER_SAMPLE,	// Put intended cycles_per_sample-1 value here
-	
+	input  		[COUNT_WIDTH-1:0]	CYCLES_PER_SAMPLE,
 	input		[AXIS_WIDTH-1:0]	data_in,
 	input							valid_in,
 	output	reg						ready_out,
-		
 	output	reg	[AXIS_WIDTH-1:0]	data_out,
 	output	reg						valid_out,
 	input							ready_in

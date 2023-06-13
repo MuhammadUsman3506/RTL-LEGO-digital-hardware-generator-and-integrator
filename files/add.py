@@ -6,18 +6,18 @@ from colorama import Fore
 import addparam
 import changeIOandRange
 import add_reg_wire
-LAGO_DIR = ''
+LEGO_DIR = ''
 Top_level_file = ''
 CURRENT_DIR = os.getcwd()
 #################### LAGO ROOT address #######################################
 
 
-def LAGO_USR_INFO():
-    global LAGO_DIR, Top_level_file
-    Linux_file_path = os.path.expanduser("~/.LAGO_USR_INFO")
+def LEGO_USR_INFO():
+    global LEGO_DIR, Top_level_file
+    Linux_file_path = os.path.expanduser("~/.LEGO_USR_INFO")
     with open(Linux_file_path, "r") as Shell_file:
         sh_file = Shell_file.readlines()
-        LAGO_DIR = sh_file[0].replace("LAGO_DIR=", "")+"/files/"
+        LEGO_DIR = sh_file[0].replace("LEGO_DIR=", "")+"/files/"
         if Top_level_file:
             if f"TOP_FILE={Top_level_file}\n" in sh_file:
                 pass
@@ -26,7 +26,7 @@ def LAGO_USR_INFO():
                 exit()
         else:
             Top_level_file = sh_file[-1]
-    LAGO_DIR = LAGO_DIR.replace("\n", "")
+    LEGO_DIR = LEGO_DIR.replace("\n", "")
     Top_level_file = Top_level_file.replace("TOP_FILE=", '')
 
 ##############################################################################
@@ -156,7 +156,9 @@ def add_inputs_outputs_JSON(fileName,inputs, input_ranges, ouputs,output_ranges,
         json.dump(data, f, indent=4)
    
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()       
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-nw',"--new_width",type=str,nargs='+',help='the name of the parameter(s) to add')
+    parser.add_argument('-ow',"--old_width",type=str,nargs='+',help='the name of the parameter(s) to add')       
     parser.add_argument('-p',"--port",action='store_true')
     parser.add_argument('-c',"--change",type=str,help='change IO status or range')
     parser.add_argument('-P', '--parameter',nargs='+',help='the name of the parameter(s) to add')
@@ -165,7 +167,7 @@ if __name__ == '__main__':
     parser.add_argument('-inst','--instance',help='instance name')
     parser.add_argument('-r','--reg',help='reg',nargs='+', type=str)
     parser.add_argument('-w','--wire',help='wire', nargs='+',type=str)
-    parser.add_argument('-rn','--range',help='range',nargs='+',type=str)
+    parser.add_argument('-rn','--range',help='range',nargs='+',type=str,default=['None'])
      
     
     parser.add_argument('-nr','--new_range', help='New range of input or output port')
@@ -183,8 +185,12 @@ if __name__ == '__main__':
     
     Top_level_file = args.topfile  
     
-    LAGO_USR_INFO()
-    Baseboard_path = os.path.join(LAGO_DIR, 'Baseboard')
+    LEGO_USR_INFO()
+    Baseboard_path = os.path.join(LEGO_DIR, 'Baseboard')
+
+    if args.new_width and args.old_width and args.instance:
+        addparam.ovride_prms(Top_level_file,args.new_width,args.old_width,args.instance)
+        exit()
     
     if args.reg:
         if args.range:
@@ -192,24 +198,11 @@ if __name__ == '__main__':
                 add_reg_wire.add_reg_to_json(Top_level_file,args.reg,args.range,Baseboard_path)
                 add_reg_wire.add_reg(Top_level_file,args.reg,args.range)
             exit()
-        else:
-            range=' '
-            for args.reg in args.reg:
-                add_reg_wire.add_reg_to_json(Top_level_file,args.reg,range,Baseboard_path)
-                add_reg_wire.add_reg(Top_level_file,args.reg,range)
-            exit()
           
     if args.wire:
-        if args.range:
             for args.wire,args.range in zip(args.wire,args.range):
                 add_reg_wire.add_wire_to_json(Top_level_file,args.wire,args.range,Baseboard_path)
                 add_reg_wire.add_wire(Top_level_file,args.wire,args.range)
-            exit()
-        else:
-            range=' '
-            for args.wire in args.wire:
-                add_reg_wire.add_wire_to_json(Top_level_file,args.wire,range,Baseboard_path)
-                add_reg_wire.add_wire(Top_level_file,args.wire,range)
             exit()
     if args.port:
         if args.inputs or args.outputs:
@@ -232,15 +225,15 @@ if __name__ == '__main__':
             print("Example:add -P <parameter> 'WIDTH' -v <value> '32' -t <topfile> 'top.sv")
             exit()
             
-    if args.localparam[0]:
-        if args.instance:
+    if args.localparam:
+        if args.value:
             for args.localparam,args.value in zip(args.localparam,args.value):
                 addparam.parameter_json(Top_level_file,args.localparam,args.value,Baseboard_path)
-                addparam.adding_localparam(Top_level_file,args.localparam,args.value,args.instance)
+                addparam.adding_localparam(Top_level_file,args.localparam,args.value)
             exit()
         else:
             print("Please provide value for localparam(s) to add")
-            print("Example:add -l <localparam> 'WIDTH' -v <value> '32' -t <topfile> 'top.sv")
+            print("Example:add -lp <localparam> 'WIDTH' -v <value> '32' -t <topfile> 'top.sv")
             exit()
             
     if args.change:

@@ -1,4 +1,5 @@
-module sync_reg(
+module sync_reg
+(
    output reg sync, 
    input clk, 
    input async

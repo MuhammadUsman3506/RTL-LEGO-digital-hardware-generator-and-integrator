@@ -4,15 +4,15 @@ import json
 import argparse
 from colorama import Fore
 
-LAGO_DIR=''
+LEGO_DIR=''
 Top_level_file=''
 #################### LAGO ROOT address #######################################
-def LAGO_USR_INFO():
-        global LAGO_DIR,Top_level_file
-        Linux_file_path = os.path.expanduser("~/.LAGO_USR_INFO")
+def LEGO_USR_INFO():
+        global LEGO_DIR,Top_level_file
+        Linux_file_path = os.path.expanduser("~/.LEGO_USR_INFO")
         with open(Linux_file_path, "r") as Shell_file:
             sh_file=Shell_file.readlines()
-            LAGO_DIR=sh_file[0].replace("LAGO_DIR=","")+"/files/";
+            LEGO_DIR=sh_file[0].replace("LEGO_DIR=","")+"/files/";
             if Top_level_file:
              if f"TOP_FILE={Top_level_file}\n" in sh_file:
                 pass
@@ -21,7 +21,7 @@ def LAGO_USR_INFO():
                 exit()
             else:
                 Top_level_file=sh_file[-1]
-        LAGO_DIR=LAGO_DIR.replace("\n","")
+        LEGO_DIR=LEGO_DIR.replace("\n","")
         Top_level_file=Top_level_file.replace("TOP_FILE=",'')
 ##############################################################################
 CURRENT_DIR=os.getcwd();
@@ -99,9 +99,9 @@ if __name__ == '__main__':
     Top_level_file = args.file_name
     erlier_name = args.earlier
     new_name = args.new_name
-    LAGO_USR_INFO()
+    LEGO_USR_INFO()
     Json_Top_file=Top_level_file.replace(".sv",'')
-    Baseboard_path = os.path.join(LAGO_DIR,'Baseboard')
+    Baseboard_path = os.path.join(LEGO_DIR,'Baseboard')
 
 
     if args.port:

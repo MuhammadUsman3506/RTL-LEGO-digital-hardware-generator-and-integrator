@@ -1,6 +1,6 @@
 #!/bin/bash
 #set -x
-LAGO_DIR=$(pwd);
+LEGO_DIR=$(pwd);
 FILE1=false;
 FILE2=false;
 FILE3=false;
@@ -13,48 +13,48 @@ GREEN=$'\e[1;32m'
 CREATE_LINK()
 {
 	cd /usr/bin/
-	sudo ln -s  ${LAGO_DIR}/files/create.py create;
+	sudo ln -s  ${LEGO_DIR}/files/create.py create;
 	echo "+++++++++++++++++++++++++++++";
 	echo "======create  installed======";
-	sudo ln -s  ${LAGO_DIR}/files/plug.py plug;
+	sudo ln -s  ${LEGO_DIR}/files/plug.py plug;
 	echo "======plug    installed======";
-	sudo ln -s  ${LAGO_DIR}/files/connect.py connect;
+	sudo ln -s  ${LEGO_DIR}/files/connect.py connect;
 	echo "======connect installed======";
-	sudo ln -s ${LAGO_DIR}/list_lago.sh list_lago;
+	sudo ln -s ${LEGO_DIR}/list_lego.sh list_lego;
 	echo "======list_lago installed===";
-	sudo ln -s ${LAGO_DIR}/files/add.py add;
+	sudo ln -s ${LEGO_DIR}/files/add.py add;
 	echo "======add installed=======";
-	sudo ln -s ${LAGO_DIR}/files/rename.py rename;
+	sudo ln -s ${LEGO_DIR}/files/rename.py rename;
 	echo "======rename installed=======";
-	sudo ln -s ${LAGO_DIR}/files/delete.py delete;
+	sudo ln -s ${LEGO_DIR}/files/delete.py delete;
 	echo "======delete installed=======";
 	echo "+++++++++++++++++++++++++++++";
-	cd $LAGO_DIR
+	cd $LEGO_DIR
 	if [[ -f ~/.LAGO_USR_INFO ]]
 	then
-		/bin/rm -r ~/.LAGO_USR_INFO
-		echo -n "LAGO_DIR=${LAGO_DIR}">~/.LAGO_USR_INFO;
+		/bin/rm -r ~/.LEGO_USR_INFO
+		echo -n "LEGO_DIR=${LEGO_DIR}">~/.LEGO_USR_INFO;
 
 	elif [[ -n ~/.LAGO_USR_INFO ]]
 	then
-		echo -n "LAGO_DIR=${LAGO_DIR}">~/.LAGO_USR_INFO;
+		echo -n "LEGO_DIR=${LEGO_DIR}">~/.LEGO_USR_INFO;
 	else
-		echo "error: LAGO_USR_INFO is not written!";
+		echo "error: LEGO_USR_INFO is not written!";
 		exit 1
 	fi
 
 		/bin/chmod u+x *.sh
-		/bin/chmod u+x ${LAGO_DIR}/examples/ *
-		/bin/chmod u+x ${LAGO_DIR}/files/*.py
+		/bin/chmod u+x ${LEGO_DIR}/examples/*
+		/bin/chmod u+x ${LEGO_DIR}/files/*.py
 
-		${LAGO_DIR}/list_lago.sh
+		${LEGO_DIR}/list_lego.sh
 
 	# adding tab_completion to /etc/bash_completion.d/
 	if [[ -f /etc/bash_completion.d/tab_completion.sh ]]
 	then
 		echo ${YELLOW} "tab_completion is already installed";
 	else
-		sudo cp ${LAGO_DIR}/tab_completion.sh /etc/bash_completion.d/tab_completion.sh
+		sudo cp ${LEGO_DIR}/tab_completion.sh /etc/bash_completion.d/tab_completion.sh
 		echo "tab_completion installed";
 		echo -e ${GREEN}  "\nplease restart your terminal to apply changes"
 	fi

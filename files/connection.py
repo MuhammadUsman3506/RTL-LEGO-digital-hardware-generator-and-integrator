@@ -2,33 +2,34 @@
 import json
 from colorama import Fore
 import re
+success=False
 def connect_to_reg(Top_level_file,reg_name,instance_name,port_name,Baseboard_path):
     json_file=Top_level_file.replace(".sv",".json")
     with open(f'{Baseboard_path}/{json_file}', 'r') as f:
         data = json.load(f)
-        if reg_name in data:
+        if reg_name in data['reg']:
            if  port_name in data[instance_name]['ports']:
                with open (f'{Top_level_file}','r') as f:
                     content=f.readlines()
+                    index1=False;index2=False
                     for string in content:
                        if instance_name in string:
-                            index2=content.index(string)
-                       if f'.{port_name}' in string:
-                            index1=content.index(string)
-                            break
-                    if index2>index1:
-                        if content.index[index1+1].startswith("."):
-                            content.pop(index1)
-                            content.insert(index1,f".{port_name} \t\t ({reg_name}),\n")
-                            print(Fore.LIGHTGREEN_EX + 'Port Connected to' + Fore.RESET)
-                            with open (f'{Top_level_file}','w') as f:
-                                f.writelines(content)
-                        else:
-                            content.pop(index1)
-                            content.insert(index1,f".{port_name} \t\t ({reg_name})\n")
-                            print(Fore.LIGHTGREEN_EX + 'Port Connected to reg' + Fore.RESET)
-                            with open (f'{Top_level_file}','w') as f:
-                                f.writelines(content)
+                            index2=index1=content.index(string)
+                            for string in content[index1+1:]:
+                                index2+=1
+                                if f'.{port_name}' in string:
+                                    if content[index2+1].startswith("."):
+                                        content.pop(index2)
+                                        content.insert(index2,f".{port_name} \t\t ({reg_name}),\n")
+                                        print(Fore.LIGHTGREEN_EX + f'Port Connected to {reg_name}' + Fore.RESET)
+                                        with open (f'{Top_level_file}','w') as f:
+                                            f.writelines(content)
+                                    else:
+                                        content.pop(index2)
+                                        content.insert(index2,f".{port_name} \t\t ({reg_name})\n")
+                                        print(Fore.LIGHTGREEN_EX + f'Port Connected to {reg_name}' + Fore.RESET)
+                                        with open (f'{Top_level_file}','w') as f:
+                                            f.writelines(content)
            else:
                print(Fore.RED,f"{port_name} is not present in {instance_name}, please check the name"+Fore.RESET)
                exit()   
@@ -40,36 +41,29 @@ def connect_to_wire(Top_level_file,wire_name,instance_name,port_name,Baseboard_p
     json_file=Top_level_file.replace(".sv",".json")
     with open(f'{Baseboard_path}/{json_file}', 'r') as f:
         data = json.load(f)
-        if wire_name in data:
+        if wire_name in data['wire']:
             if  port_name in data[instance_name]['ports']:
                with open (f'{Top_level_file}','r') as f:
                     content=f.readlines()
-                    index=False;index2=False
+                    index1=False;index2=False
                     for string in content:
-                        if instance_name in string:
-                            index=content.index(string)
-                            break
-                    for string in content:
-                        if f'.{port_name}' in string:
-                            index2=content.index(string)
-                            if index2>index:
-                                break
-                    try: 
-                        if content[index2+1].startswith("."): 
-                            content.pop(index2)
-                            content.insert(index2,f".{port_name} \t\t ({wire_name}),\n")
-                            print(Fore.LIGHTGREEN_EX + f'Port Connected to wire' + Fore.RESET)
-                            with open(f'{Top_level_file}','w') as f:
-                                f.writelines(content)
-                        else:
-                            content.pop(index2)
-                            content.insert(index2,f".{port_name} \t\t ({wire_name})\n")
-                            print(Fore.LIGHTGREEN_EX + 'Port Connected to wire' + Fore.RESET)
-                            with open (f'{Top_level_file}','w') as f:
-                                f.writelines(content)
-                    except IndexError:
-                       print(Fore.RED,"IndexError",Fore.RESET)
-                       return
+                       if instance_name in string:
+                            index2=index1=content.index(string)
+                            for string in content[index1+1:]:
+                                index2+=1
+                                if f'.{port_name}' in string:
+                                    if content[index2+1].startswith("."):
+                                        content.pop(index2)
+                                        content.insert(index2,f".{port_name} \t\t ({wire_name}),\n")
+                                        print(Fore.LIGHTGREEN_EX + f'Port Connected to {wire_name}' + Fore.RESET)
+                                        with open (f'{Top_level_file}','w') as f:
+                                            f.writelines(content)
+                                    else:
+                                        content.pop(index2)
+                                        content.insert(index2,f".{port_name} \t\t ({wire_name})\n")
+                                        print(Fore.LIGHTGREEN_EX + f'Port Connected to {wire_name}' + Fore.RESET)
+                                        with open (f'{Top_level_file}','w') as f:
+                                            f.writelines(content)
             else:
                 print(Fore.RED,f"{port_name} is not present in {instance_name}, please check the name"+Fore.RESET)
                 exit()   
@@ -139,29 +133,25 @@ def connect_param(Top_level_file,param,instance,ports,Baseboard_path,data):
             if  ports in data[instance]['ports']:
                 with open(f"{Top_level_file}", 'r') as f:
                     content = f.readlines()
-                    index=False;index2=False
+                    index1=False;index2=False
                     for string in content:
-                        if instance in string:
-                            index=content.index(string)
-                            break
-                    for string in content:
-                        if ports in string:
-                            index2=content.index(string)
-                            if index2>index:
-                                break
-                            
-                    if content[index2+1].startswith("."):
-                        content.pop(index2)
-                        content.insert(index2,f".{ports} \t\t ({param}),\n")
-                        print(Fore.LIGHTGREEN_EX + 'Port Connected to parameter' + Fore.RESET)
-                        with open(f'{Top_level_file}','w') as f:
-                            f.writelines(content)
-                    else:
-                        content.pop(index2)
-                        content.insert(index2,f".{ports} \t\t ({param})\n")
-                        print(Fore.LIGHTGREEN_EX + 'Port Connected to parameter' + Fore.RESET)
-                        with open (f'{Top_level_file}','w') as f:
-                            f.writelines(content)            
+                       if instance in string:
+                            index2=index1=content.index(string)
+                            for string in content[index1+1:]:
+                                index2+=1
+                                if f'.{ports}' in string:
+                                    if content[index2+1].startswith("."):
+                                        content.pop(index2)
+                                        content.insert(index2,f".{ports} \t\t ({param}),\n")
+                                        print(Fore.LIGHTGREEN_EX + f'Port Connected to {param}' + Fore.RESET)
+                                        with open (f'{Top_level_file}','w') as f:
+                                            f.writelines(content)
+                                    else:
+                                        content.pop(index2)
+                                        content.insert(index2,f".{ports} \t\t ({param})\n")
+                                        print(Fore.LIGHTGREEN_EX + f'Port Connected to {param}' + Fore.RESET)
+                                        with open (f'{Top_level_file}','w') as f:
+                                            f.writelines(content)          
             else:
                 print(Fore.RED + f'Error: Port {ports} not found in instance {instance}' + Fore.RESET)
                 exit()
@@ -178,19 +168,28 @@ def connect_param(Top_level_file,param,instance,ports,Baseboard_path,data):
                 if data[instance]['ports'][ports]:
                         with open(f"{Top_level_file}", 'r') as f:
                             content = f.readlines()
-                            for string in content:
-                                if instance in string:
-                                    index = content.index(string)
-                                if ports in string:
-                                    index1 = content.index(string)
+                        index1=False;index2=False
+                        for string in content:
+                            if instance in string:
+                                    index1=content.index(string)
+                                    for string in content[index1+1:]:
+                                        if f'.{ports}' in string:
+                                            index2=content.index(string)
+                            if index1 < index2:
                                     break
-                            if index1 > index:
-                                Modified_port = f".{ports} \t\t\t ({param})\n"
-                                content.pop(index1)
-                                content.insert(index1, Modified_port)
-                                print(Fore.LIGHTGREEN_EX + 'Parameter Connected.' + Fore.RESET)
-                                with open(f"{Top_level_file}", 'w') as f:
-                                    f.writelines(content)
+                            if index2>index1:
+                                if content[index2+1].startswith("."):
+                                    content.pop(index2)
+                                    content.insert(index2,f".{ports} \t\t ({param}),\n")
+                                    print(Fore.LIGHTGREEN_EX + 'Port Connected to' + Fore.RESET)
+                                    with open (f'{Top_level_file}','w') as f:
+                                        f.writelines(content)
+                                else:
+                                    content.pop(index2)
+                                    content.insert(index2,f".{ports} \t\t ({param})\n")
+                                    print(Fore.LIGHTGREEN_EX + 'Port Connected to reg' + Fore.RESET)
+                                    with open (f'{Top_level_file}','w') as f:
+                                        f.writelines(content)
             else:
                 print(Fore.RED,"Aborting...",Fore.RESET)
                 exit() 
@@ -206,24 +205,123 @@ def connect_instances(fille_name,instance1,input_port,instance2,output_ports,Bas
                 if output_ports in data[instance2]['ports']:
                     with open (fille_name) as file:
                         content=file.readlines()
-                        index=False;index2=False
-                        for string in content:
-                            if instance1 in string:
-                                index=content.index(string)
-                                break
-                        for string in content:
-                            if input_port in string:
-                                index2=content.index(string)
-                                if index2>index:
-                                    break
-                        content.pop(index2)
-                        content.insert(index2,f".{input_port} \t\t\t ({output_ports}),\n")
-                        with open (fille_name,'w') as wri:
-                            wri.writelines(content)
-                        print(Fore.GREEN,f"{input_port} is connected to {output_ports}")        
+
+                    index1=False;index2=False
+                    for string in content:
+                       if instance1 in string:
+                            index1=content.index(string)
+                            for string in content[index1+1:]:
+                                if f'.{input_port}' in string:
+                                    index2=content.index(string)
+                       if index1 < index2:
+                            break
+                    if index2>index1:
+                        if content[index2+1].startswith("."):
+                            content.pop(index2)
+                            content.insert(index2,f".{input_port} \t\t\t ({output_ports}),\n")
+
+                            with open (f'{fille_name}','w') as f:
+                                f.writelines(content)
+                                print(Fore.LIGHTGREEN_EX + 'Port Connected to' + Fore.RESET)
+                        else:
+                            content.pop(index2)
+                            content.insert(index2,f".{input_port} \t\t\t ({output_ports}),\n")
+                            with open (f'{fille_name}','w') as f:
+                                f.writelines(content)
+                                print(Fore.LIGHTGREEN_EX + 'Port Connected to reg' + Fore.RESET)    
             else:
                 print( Fore.RED,f"{input_port} is not present in {instance1}!",Fore.RESET)
                 exit()
         else:
             print(Fore.RED,f"{instance1} is not present in {fille_name} ",Fore.RESET) 
             exit()
+def check_json(file_name,local_param,instance,port,Baseboard_path):
+    global success
+    json_file=file_name.replace(".sv",'.json')
+    with open(f"{Baseboard_path}/{json_file}") as j:
+        data=json.load(j)
+        try:
+            if port in data[instance]['ports']:
+                if local_param in data["parameter"]:
+                    success = True
+                    return success
+                else:
+                    print(Fore.RED,f"{local_param} is not present in {file_name}!",Fore.RESET)
+                    exit()
+            else:
+                print(Fore.RED,f"{port} is not present in {instance}!",Fore.RESET)
+                exit()
+        except:
+            print(Fore.RED,f"{instance} is not present in {file_name}!",Fore.RESET)
+            exit()
+
+def connect_localparam(file_name,local_param,instance,port):
+    global success
+    if success:
+        try:
+            with open (file_name) as file:
+                content=file.readlines()
+                index1=False;index2=False
+                for string in content:
+                    if instance in string:
+                        index1=content.index(string)
+                        for string in content[index1+1:]:
+                            if f'.{port}' in string:
+                                index2=content.index(string)
+                            if index1 < index2:
+                                break
+                if index2>index1:
+                    if content[index2+1].startswith("."):
+                        content.pop(index2)
+                        content.insert(index2,f".{port} \t\t\t ({local_param}),\n")
+                        with open (f'{file_name}','w') as f:
+                            f.writelines(content)
+                            print(Fore.LIGHTGREEN_EX + f'Port Connected to {local_param}' + Fore.RESET)
+                    else:
+                        content.pop(index2)
+                        content.insert(index2,f".{port} \t\t\t ({local_param}),\n")
+                        with open (f'{file_name}','w') as f:
+                            f.writelines(content)
+                            print(Fore.LIGHTGREEN_EX + f'Port Connected to {local_param}' + Fore.RESET)
+        except: 
+            print(Fore.RED,f"{instance} is not present in {file_name}!",Fore.RESET)
+            exit()
+
+def check_json_inst_ports(Top_level_file,instance,ports,Baseboard_path):
+    json_file=Top_level_file.replace(".sv",'.json')
+    with open(f"{Baseboard_path}/{json_file}") as j:
+        data=json.load(j)
+        try:
+            if ports in data[instance]['ports']:
+                return True
+            else:
+                print(Fore.RED,f"{ports} is not present in {instance}!",Fore.RESET)
+                exit()
+        except:
+            print(Fore.RED,f"{instance} is not present in {Top_level_file}!",Fore.RESET)
+            exit()
+
+def connect_to_value(Top_level_file,instance,port,value):
+     with open (f'{Top_level_file}','r') as f:
+                    content=f.readlines()
+                    index1=False;index2=False
+                    for string in content:
+                       if instance in string:
+                            index2=index1=content.index(string)
+                            for string in content[index1+1:]:
+                                index2+=1
+                                if f'.{port}' in string:
+                                    if content[index2+1].startswith("."):
+                                        content.pop(index2)
+                                        content.insert(index2,f".{port} \t\t ({value}),\n")
+                                        print(Fore.LIGHTGREEN_EX + f'Port Connected to {value}' + Fore.RESET)
+                                        with open (f'{Top_level_file}','w') as f:
+                                            f.writelines(content)
+                                            success=False
+                                    else:
+                                        content.pop(index2)
+                                        content.insert(index2,f".{port} \t\t ({value})\n")
+                                        print(Fore.LIGHTGREEN_EX + f'Port Connected to {value}' + Fore.RESET)
+                                        with open (f'{Top_level_file}','w') as f:
+                                            f.writelines(content)
+                                            success=False

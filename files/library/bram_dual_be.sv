@@ -1,36 +1,35 @@
-module bram_dual_be			// Readfirst mode with byte enable
-	#(
-		parameter NB_COL = 4,                       		// Specify number of columns (number of bytes)
-		parameter COL_WIDTH = 8,                  			// Specify column width (byte width, typically 8 or 9)
-		parameter RAM_DEPTH = 512,                  		// Specify RAM depth (number of entries)
-		parameter RAM_PERFORMANCE = "HIGH_PERFORMANCE", 	// Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
-		parameter INIT_FILE = "",                       	// Specify name/location of RAM initialization file if using one (leave blank if not)
-		parameter INIT_START_ADDR 	= 0,
-		parameter INIT_END_ADDR		= RAM_DEPTH-1
-	)
+module bram_dual_be			
+#(
+	parameter NB_COL = 4,                       		
+	parameter COL_WIDTH = 8,                  			
+	parameter RAM_DEPTH = 512,                  		
+	parameter RAM_PERFORMANCE = "HIGH_PERFORMANCE", 	
+	parameter INIT_FILE = "",                       	
+	parameter INIT_START_ADDR 	= 0,
+	parameter INIT_END_ADDR		= 1
+)
 (
-  input		[clogb2(RAM_DEPTH-1)-1:0] addra,   // Port A address bus, width determined from RAM_DEPTH
-  input		[clogb2(RAM_DEPTH-1)-1:0] addrb,   // Port B address bus, width determined from RAM_DEPTH
-  input		[(NB_COL*COL_WIDTH)-1:0] dina,   // Port A RAM Input data
-  input		[(NB_COL*COL_WIDTH)-1:0] dinb,   // Port B RAM Input data
-  input		clka,                            // Port A clock
-  input		clkb,                            // Port B clock
-  input		[NB_COL-1:0] wea,                // Port A write enable
-  input		[NB_COL-1:0] web,                // Port B write enable
-  input		ena,                             // Port A RAM Enable, for additional power savings, disable port when not in use
-  input		enb,                             // Port B RAM Enable, for additional power savings, disable port when not in use
-  input		rsta,				 // Port A output reset (does not affect memory contents)
-  input		rstb,                            // Port B output reset (does not affect memory contents)
-  input		regcea,                          // Port A output register enable
-  input		regceb,                          // Port B output register enable
-  output 	[(NB_COL*COL_WIDTH)-1:0] douta, // Port A RAM output data
-  output 	[(NB_COL*COL_WIDTH)-1:0] doutb // Port B RAM output data
+  input		[RAM_DEPTH-1:0] addra,
+  input		[RAM_DEPTH-1:0] addrb,
+  input		[COL_WIDTH-1:0] dina,  
+  input		[NB_COL-1:0] dinb,  
+  input		clka,                           
+  input		clkb,                           
+  input		[NB_COL-1:0] wea,               
+  input		[NB_COL-1:0] web,               
+  input		ena,                            
+  input		enb,                            
+  input		rsta,				 
+  input		rstb,                           
+  input		regcea,                         
+  input		regceb,                         
+  output reg	[COL_WIDTH-1:0] douta, 
+  output reg	[COL_WIDTH-1:0] doutb 
 );
   reg [(NB_COL*COL_WIDTH)-1:0] ram_name [RAM_DEPTH-1:0];
   reg [(NB_COL*COL_WIDTH)-1:0] ram_data_a = {(NB_COL*COL_WIDTH){1'b0}};
   reg [(NB_COL*COL_WIDTH)-1:0] ram_data_b = {(NB_COL*COL_WIDTH){1'b0}};
-
-  // The following code either initializes the memory values to a specified file or to all zeros to match hardware
+  
   generate
     if (INIT_FILE != "") begin: use_init_file
       initial
@@ -42,7 +41,7 @@ module bram_dual_be			// Readfirst mode with byte enable
           ram_name[ram_index] = {(NB_COL*COL_WIDTH){1'b0}};
     end
   endgenerate
-
+  
   always @(posedge clka)
     if (ena) begin
       ram_data_a <= ram_name[addra];
@@ -52,8 +51,8 @@ module bram_dual_be			// Readfirst mode with byte enable
     if (enb) begin
       ram_data_b <= ram_name[addrb];
     end
-
-  generate
+	
+	generate
   genvar i;
      for (i = 0; i < NB_COL; i = i+1) begin: byte_write
        always @(posedge clka)
@@ -66,18 +65,15 @@ module bram_dual_be			// Readfirst mode with byte enable
              ram_name[addrb][(i+1)*COL_WIDTH-1:i*COL_WIDTH] <= dinb[(i+1)*COL_WIDTH-1:i*COL_WIDTH];
   end
   endgenerate
-
-  //  The following code generates HIGH_PERFORMANCE (use output register) or LOW_LATENCY (no output register)
+  
   generate
     if (RAM_PERFORMANCE == "LOW_LATENCY") begin: no_output_register
 
-      // The following is a 1 clock cycle read latency at the cost of a longer clock-to-out timing
+  
        assign douta = ram_data_a;
        assign doutb = ram_data_b;
 
     end else begin: output_register
-
-      // The following is a 2 clock cycle read latency with improve clock-to-out timing
 
       reg [(NB_COL*COL_WIDTH)-1:0] douta_reg = {(NB_COL*COL_WIDTH){1'b0}};
       reg [(NB_COL*COL_WIDTH)-1:0] doutb_reg = {(NB_COL*COL_WIDTH){1'b0}};
@@ -99,12 +95,4 @@ module bram_dual_be			// Readfirst mode with byte enable
 
     end
   endgenerate
-
-  //  The following function calculates the address width based on specified RAM depth
-  function integer clogb2;
-    input integer depth;
-      for (clogb2=0; depth>0; clogb2=clogb2+1)
-        depth = depth >> 1;
-  endfunction
-endmodule							
-							
+endmodule								

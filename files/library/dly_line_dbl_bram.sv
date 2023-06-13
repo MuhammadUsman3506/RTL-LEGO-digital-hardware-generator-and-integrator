@@ -1,26 +1,6 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    18:37:54 09/25/2012 
-// Design Name: 
-// Module Name:    dly_line_dbl_bram 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
 module dly_line_dbl_bram
 	#(	  
-		parameter	WIDTH 		= 32,	// Not configurable
+		parameter	WIDTH 		= 32,	
 		parameter	DEPTH1		= 16,
 		parameter	DEPTH2		= 64,
 		parameter 	RST_DEPTH_A = 16,
