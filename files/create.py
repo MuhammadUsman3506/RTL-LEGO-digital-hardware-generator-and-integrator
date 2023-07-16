@@ -2,6 +2,8 @@
 import argparse
 import os
 import json
+global tabsize
+tabsize = 20
 
 #################### LAGO ROOT address ######################################
 def LEGO_USR_INFO(fname):
@@ -20,42 +22,42 @@ f_name = "Baseboard.sv"
 folder_name = 'Baseboard'
 ######################## setting name of instance & body  ############################
 def set_instance_name(f_name, inputs, outputs, input_ranges, output_ranges):
+    global tabsize
     m_name = f_name.replace(".sv", "")
     if inputs or outputs:
-        Body = f"module {m_name} (\ninput\t   \t\tclk,\ninput\t   \t\treset,"
+        Body = f"module {m_name}(\ninput\tclk,\ninput\treset,"
         if inputs != "None":
-            print("inputs",inputs)
             i = ""
             if input_ranges in ['None', 'none']:
                 for inp in inputs:
-                    inpu = f"\ninput\t  \t\t{(i.join(inp))},"
+                    inpu = f"\ninput\t{(i.join(inp))},"
                     Body = Body + inpu
             else:
                 for inp, inp_ranges in zip(inputs, input_ranges):
-                    inpu = f"\ninput\t  \t{inp_ranges}\t{(i.join(inp))},"
+                    inpu = f"\ninput        {inp_ranges}\t{(i.join(inp))},"
                     Body = Body + inpu
         if outputs != "None":
             o = ""
             if output_ranges in ['None', 'none']:
                 for out in outputs:
-                    outu = f"\noutput\twire\t\t{o.join(out)},"
+                    outu = f"\noutput reg\t{o.join(out)},"
                     Body = Body + outu
             else:
                 for out, opt_ranges in zip(outputs, output_ranges):
-                    outu = f"\noutput\twire\t{opt_ranges}\t{o.join(out)},"
+                    outu = f"\noutput reg  {opt_ranges}\t{o.join(out)},"
                     Body = Body + outu
         Body = Body.rstrip(",")
         end = "\n\n);\nendmodule"
         Body = Body + end
-        print(Body)
     else:
-        Body = f'''module {m_name} (\ninput\tlogic\t\tclk,\ninput\tlogic\t\treset\n\n);\nendmodule'''
-        print(Body)
+        Body = f'''module {m_name} (\ninput\tlogic\tclk,\ninput\tlogic\treset\n\n);\nendmodule'''
+    Body = Body.expandtabs(tabsize)
+    print(Body)
     return Body
 
 #########################################################
 def name():
-    global inputs, outputs, input_ranges,f_name, output_ranges;
+    global inputs, outputs, input_ranges,f_name, output_ranges
     with open(f_name, 'w+') as file:
         file.write(set_instance_name(f_name, inputs,outputs, input_ranges, output_ranges))
         print(Fore.GREEN + f"{f_name} created" + Fore.RESET)

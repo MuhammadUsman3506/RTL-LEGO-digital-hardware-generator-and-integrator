@@ -1,6 +1,6 @@
 module axis_mux_2to1
 #(	  
-	parameter	WIDTH 		= 16
+	parameter	WIDTH 		= 4
 )
 (  
 	input						sel,

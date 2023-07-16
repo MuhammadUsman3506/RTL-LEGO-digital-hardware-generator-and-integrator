@@ -31,6 +31,22 @@ def LEGO_USR_INFO():
 
 ##############################################################################
 
+def update_json(json_data):
+        try:
+            param=json_data['parameter']
+            for key, value in json_data['ports'].items():
+                if str(list(param.keys())[0]) in value['range']:
+                    new_range = value['range'].replace(str(list(param.keys())[0]), str(list(param.values())[0]))
+                    start,end = new_range.split(':')
+                    start=start.replace("[","")
+                    end=end.replace("]","")
+                    start=int(start.split("-")[0]) - int(start.split("-")[1])
+                    new_range = f'[{start}:{end}]'
+                    json_data['ports'][key] = {'type': value['type'], 'range': new_range}
+            return json_data
+        except:
+            return json_data
+
 
 def add_inputs_outputs(fileName, inputs, input_ranges, outputs, output_ranges):
     instance_name = fileName.replace('.sv', '')
@@ -141,17 +157,20 @@ def add_inputs_outputs_JSON(fileName,inputs, input_ranges, ouputs,output_ranges,
             for inputs, input_ranges in zip(inputs, input_ranges):
                 if inputs in data['ports']:
                     print(Fore.RED + f"{inputs} already exists in {fileName}" + Fore.RESET)
+                    exit()
                 else:
                     s={'type':'input','range':input_ranges} 
                     data['ports'].update({inputs:s})
-                    print(Fore.GREEN + f"{inputs} is added in {fileName}" + Fore.RESET)
+
         if ouputs:
             for output,range in zip(ouputs,output_ranges):
                 if output in data['ports']:
                     print(Fore.RED + f"{output} already exists in {fileName}" + Fore.RESET)
+                    exit()
                 else:
-                    data['ports'][output][{'type':'output','range':range}]
-                    print(Fore.GREEN + f"{output} is added in {fileName}" + Fore.RESET)
+                    s={'type':'output','range':range} 
+                    data['ports'].update({output:s})
+    data=update_json(data)
     with open(f"{Baseboard_path}/{json_file}" , 'w') as f:
         json.dump(data, f, indent=4)
    
@@ -159,7 +178,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-nw',"--new_width",type=str,nargs='+',help='the name of the parameter(s) to add')
     parser.add_argument('-ow',"--old_width",type=str,nargs='+',help='the name of the parameter(s) to add')       
-    parser.add_argument('-p',"--port",action='store_true')
     parser.add_argument('-c',"--change",type=str,help='change IO status or range')
     parser.add_argument('-P', '--parameter',nargs='+',help='the name of the parameter(s) to add')
     parser.add_argument('-lp','--localparam',nargs='+',help='the name of the localparam(s) to add')
@@ -204,16 +222,15 @@ if __name__ == '__main__':
                 add_reg_wire.add_wire_to_json(Top_level_file,args.wire,args.range,Baseboard_path)
                 add_reg_wire.add_wire(Top_level_file,args.wire,args.range)
             exit()
-    if args.port:
-        if args.inputs or args.outputs:
-            for args.inputs,args.input_ranges,args.outputs,args.output_ranges in zip(args.inputs,args.input_ranges,args.outputs,args.output_ranges):
-                add_inputs_outputs_JSON(Top_level_file,args.inputs,args.input_ranges,args.outputs,args.output_ranges,Baseboard_path)
-                add_inputs_outputs(Top_level_file,args.inputs,args.input_ranges,args.outputs,args.output_ranges)
+    if args.inputs:
+            add_inputs_outputs_JSON(Top_level_file,args.inputs,args.input_ranges,args.outputs,args.output_ranges,Baseboard_path)
+            add_inputs_outputs(Top_level_file,args.inputs,args.input_ranges,args.outputs,args.output_ranges)
             exit()
-        else:
-            print("Please provide input or output port name")
-            print("Example:add -p <port> -i <inputs> 'clk' -o <outputs> 'rst' -t <topfile> 'top.sv")
+    if args.outputs:
+            add_inputs_outputs_JSON(Top_level_file,args.inputs,args.input_ranges,args.outputs,args.output_ranges,Baseboard_path)
+            add_inputs_outputs(Top_level_file,args.inputs,args.input_ranges,args.outputs,args.output_ranges)
             exit()
+
     if args.parameter:
         if args.value:
             for args.parameter,args.value in zip(args.parameter,args.value):
@@ -261,4 +278,3 @@ if __name__ == '__main__':
     else:
         print("please provide valid option")
         exit()
-       

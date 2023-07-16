@@ -1,14 +1,14 @@
 module register 
 #(
-	parameter WIDTH = 32,
-	parameter Height = 32
+	parameter WIDTH = 4,
+	parameter Height = 4
 )
 (
 	input 				clk,
 	input 				reset,
-	input 				en,
-	input 	[Height-1:0] data_in,
-	output 	[WIDTH-1:0] data_out
+	input 			en,
+	input 	    [Height-1:0] data_in,
+	output reg	[WIDTH-1:0] data_out
 );
 
 always@(posedge clk)

@@ -7,9 +7,11 @@ import shutil
 import math
 import re
 from colorama import Fore
+from create import tabsize
 LEGO_DIR = ''
 Top_level_file = ''
 CURRENT_DIR = os.getcwd()
+
 #################### LAGO ROOT address #######################################
 
 
@@ -38,11 +40,20 @@ def copy_file(file):
     if not os.path.exists(f"{CURRENT_DIR}/{file}"):
         shutil.copy(library_file, CURRENT_DIR)
 
-
-def extract_data(file,instance):                   # it will open library file
-    global Top_level_file, CURRENT_DIR
+def extract_data(file,instance):               
+    global Top_level_file, CURRENT_DIR ,tabsize,library
+    #list only files in library not there extension
+    files = [os.path.splitext(f)[0] for f in os.listdir(library) if os.path.isfile(os.path.join(library, f))]
     with open(f"{file}", 'r') as f:
         lines = f.readlines()
+        for line in lines:
+            for file in files:
+                if file in line.split() :
+                    if '.'  in lines[lines.index(line)+1]: 
+                        file=os.path.join(library,f'{file}.sv')
+                        if not os.path.exists(f"{CURRENT_DIR}/{file}"):
+                            shutil.copy(file, CURRENT_DIR)
+
     in_module = False
     input_or_output_count = 0
     output_string = ""
@@ -59,11 +70,10 @@ def extract_data(file,instance):                   # it will open library file
             if "," in x:
                 x = x.split(",")[0]
             if input_or_output_count == sum(('input' in line) or ('output' in line) for line in lines):
-                output_string += '.' + x + '\t\t\t()\n'
+                output_string += '.' + x.ljust(tabsize) + '()\n'
             else:
-                output_string += '.' + x + '\t\t\t(),\n'
+                output_string += '.' + x.ljust(tabsize) +  '(),\n'
 
-    # open top level file for inst checking
     with open(f"{CURRENT_DIR}/{Top_level_file}", "r") as f:
         content = f.read()
         lines = content.split('\n')
@@ -72,7 +82,7 @@ def extract_data(file,instance):                   # it will open library file
                 print(Fore.RED +
                       f'Error: instance {instance} already exists at line {i+1}. Please Enter different name!' + Fore.RESET)
                 exit()
-        with open(f"{CURRENT_DIR}/{Top_level_file}", "a+") as f:  # open top file in append mode
+        with open(f"{CURRENT_DIR}/{Top_level_file}", "a+") as f:  
             if 'endmodule' in content:
                 r_end = (f.tell())-9
                 x = f.truncate(r_end)
@@ -307,7 +317,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     Top_level_file = args.topfile
     
-    LEGO_USR_INFO()  # ---->
+    LEGO_USR_INFO()
     Baseboard_path = os.path.join(LEGO_DIR, 'Baseboard')
     library = os.path.join(LEGO_DIR, 'library')
 

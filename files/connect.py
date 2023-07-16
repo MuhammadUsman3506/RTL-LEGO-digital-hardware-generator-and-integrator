@@ -2,7 +2,6 @@
 import argparse
 import os
 import json
-
 from colorama import Fore
 import connection
 
