@@ -1,15 +1,15 @@
 module ALU 
 #(
-	parameter RAM_WIDTH 	= 32,
-	parameter WIDTH 		= 2
+	parameter WIDTH 	= 32,
+	parameter OPCODE_WIDTH 		= 2
 	
 )
 (
 	input                               clk,
-	input        [WIDTH-1:0]			opcode,
-	input        [RAM_WIDTH-1:0]		op1,
-	input        [RAM_WIDTH-1:0]		op2,
-	output  reg  [RAM_WIDTH-1:0]		result
+	input        [OPCODE_WIDTH-1:0]			opcode,
+	input        [WIDTH-1:0]		op1,
+	input        [WIDTH-1:0]		op2,
+	output  reg  [WIDTH-1:0]		result
 );
 
 parameter ADD  = 'd0;
