@@ -48,8 +48,8 @@ def extract_data(file,instance):
         lines = f.readlines()
         for line in lines:
             for file in files:
-                if file in line.split() :
-                    if '.'  in lines[lines.index(line)+1]: 
+                if file in line.split():
+                    if '.'  in lines[lines.index(line)+1] or '#(' in lines[lines.index(line)+1]: 
                         file=os.path.join(library,f'{file}.sv')
                         if not os.path.exists(f"{CURRENT_DIR}/{file}"):
                             shutil.copy(file, CURRENT_DIR)

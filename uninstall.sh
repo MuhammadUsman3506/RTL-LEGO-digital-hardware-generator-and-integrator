@@ -1,9 +1,9 @@
 #!/bin/bash
 GREEN=$'\e[1;32m'
 YELLOW=$'\e[1;33m'
+WHITE=$'\e[1;37m'
 cd /usr/bin
-# remove links
-set -e
+set -e # exit the script if any command fails
 # remove links
 if [[ -L "/usr/bin/create" ]]
 then
@@ -81,7 +81,7 @@ then
 	complete -r create connect plug add rename delete
 	echo "---tab_completion uninstalled---";
 	echo "--------------------------------";
-	echo ${YELLOW} "restart your terminal to apply changes";
+	echo ${YELLOW} "restart your terminal to apply changes"${WHITE};
 else
 	echo "--tab_completion is not installed--";
 fi

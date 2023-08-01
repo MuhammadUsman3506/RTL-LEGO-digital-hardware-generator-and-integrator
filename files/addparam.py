@@ -56,7 +56,6 @@ def parameter_json(filename,param,ranges,Baseboard_path):
                 return
             elif data.get('parameter'):
                  data['parameter'][param]=ranges
-                 print(data['ports'])
 
                  with open (f"{Baseboard_path}/{filename}",'w') as n:
                     new = json.dumps(data,indent=4)
@@ -87,10 +86,11 @@ def ovride_prms(filename,nw_w,prv_w,inst):
             if prm_dec:
                 Body = "".join([f'\n.{prm}'.ljust(tabsize)+f'({("".join(rng))},'for prm, rng in zip(prv_w, nw_w) if f".{prm}" not in ext_pram])
                 if Body:
-                    print(Fore.GREEN + f"{prv_w} added to {inst}" + Fore.RESET)
+                    for prv_w in prv_w:
+                        print(Fore.GREEN + f"{prv_w} added to {inst}" + Fore.RESET)
                 else:
-                    print(
-                        Fore.RED + f"{prv_w} already exists in {inst}" + Fore.RESET)
+                    for prv_w in prv_w:
+                        print(Fore.RED + f"{prv_w} already exists in {inst}" + Fore.RESET)
                     exit()
                 new_text = f"{existing_prm}),{Body.rstrip(',')}"
                 content = content.replace(match.group(1), new_text)
@@ -100,7 +100,8 @@ def ovride_prms(filename,nw_w,prv_w,inst):
             if prm_dec:
                 Body = "".join([f'\n.{prm}'.ljust(tabsize)+f'({("".join(rng))}),' for prm, rng in zip(prv_w, nw_w)])
                 if Body:
-                    print(Fore.GREEN + f"{prv_w} added to {inst}" + Fore.RESET)
+                    for prv_w in prv_w:
+                        print(Fore.GREEN + f"{prv_w} added to {inst}" + Fore.RESET)
                     pattern_text = f"\n#(\n\t{Body.rstrip(',')}\n)\n{inst}"
                     content = content.replace(f"{inst}", pattern_text)
             else:

@@ -30,8 +30,8 @@ connect -v "instr[21:17]" "instr[16:12]" "instr[26:22]" -i regfile_inst -ip rd_a
 ########################## ALU #####################################
 plug -inst ALU.sv -n ALU_inst #hhjj
 add -ow WIDTH -nw RAM_WIDTH -inst ALU_inst #
-connect -i ALU_inst -ip clk -op clk # Top_level_file inputs/outputs to instance ports
-connect -w op1 op2 alu_out -i ALU_inst -ip op1 op2 result # connect : wire to instance ports
+#connect -i ALU_inst -ip clk -op clk # Top_level_file inputs/outputs to instance ports
+connect -w op1 op2 alu_out -i ALU_inst -ip op1 op2 alu_out # connect : wire to instance ports
 #connect -lp opcode_2bit -i ALU_inst -ip opcode #
 connect -v "opcode[1:0]" -i ALU_inst -ip opcode # constant value connect to the instance
 ######################## Mux #################################
@@ -68,5 +68,3 @@ plug -inst comb_block.sv -n cmb3	#plug inst_comb_block
 add -nw DATA_END_ADDR -ow  WIDTH -inst cmb3 # gdfd
 ##connect -r opcode -i cmb -ip out # wire to isnstance
 connect -v "instr[31:27]" "opcode" -i cmb3 -ip in out # constant value connect to the instance
-
-

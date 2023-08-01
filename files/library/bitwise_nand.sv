@@ -1,4 +1,4 @@
-module nand_gate
+module bitwise_nand
 #(
 	parameter WIDTH = 32
 )

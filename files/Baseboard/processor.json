@@ -20,13 +20,11 @@
         "DATA_FILE": "\"data_file.txt\"",
         "DATA_START_ADDR": "0",
         "DATA_END_ADDR": "5",
-        "LW": "'d4",
-        "SW": "'d5"
-    },
-    "reg": {
-        "opcode": "[4:0]"
+        "LW": "5'd4",
+        "SW": "5'd5"
     },
     "wire": {
+        "opcode": "[4:0]",
         "instr": "[31:0]",
         "reg_data_in": "[31:0]",
         "alu_out": "[31:0]",
@@ -38,7 +36,7 @@
         "ctl2": "None",
         "ctl1": "None"
     },
-    "up_counter_inst": {
+    "cntr": {
         "ports": {
             "clk": {
                 "type": "input",
@@ -54,7 +52,7 @@
             }
         }
     },
-    "prg_mem_inst": {
+    "prg_mem": {
         "ports": {
             "clock": {
                 "type": "input",
@@ -120,10 +118,6 @@
     },
     "ALU_inst": {
         "ports": {
-            "clk": {
-                "type": "input",
-                "range": "None"
-            },
             "opcode": {
                 "type": "input",
                 "range": "[1:0]"
@@ -136,13 +130,13 @@
                 "type": "input",
                 "range": "[31:0]"
             },
-            "result": {
+            "alu_out": {
                 "type": "output",
                 "range": "[31:0]"
             }
         }
     },
-    "Mux_inst": {
+    "mx2to1": {
         "ports": {
             "s_l": {
                 "type": "input",
@@ -162,7 +156,7 @@
             }
         }
     },
-    "data_mem_inst": {
+    "data_mem": {
         "ports": {
             "clock": {
                 "type": "input",
@@ -190,7 +184,7 @@
             }
         }
     },
-    "inst_not_gate": {
+    "n_gate": {
         "ports": {
             "in": {
                 "type": "input",
@@ -202,7 +196,7 @@
             }
         }
     },
-    "inst_comparator": {
+    "cmp1": {
         "ports": {
             "in0": {
                 "type": "input",
@@ -218,7 +212,7 @@
             }
         }
     },
-    "inst1_comparator": {
+    "cmp2": {
         "ports": {
             "in0": {
                 "type": "input",
@@ -231,6 +225,18 @@
             "out": {
                 "type": "output",
                 "range": "None"
+            }
+        }
+    },
+    "cmb3": {
+        "ports": {
+            "in": {
+                "type": "input",
+                "range": "[4:0]"
+            },
+            "out": {
+                "type": "output",
+                "range": "[4:0]"
             }
         }
     }
